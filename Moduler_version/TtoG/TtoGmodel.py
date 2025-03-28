@@ -7,9 +7,9 @@ class GraphToTextTransformer(nn.Module):
         super(GraphToTextTransformer, self).__init__()
         self.embed_dim = embed_dim
         
-        self.encoder_embedding = nn.Linear(graph_input_dim, embed_dim)
+        self.encoder_embedding = nn.Embedding(text_vocab_size, embed_dim)
         
-        self.decoder_embedding = nn.Embedding(text_vocab_size, embed_dim)
+        self.decoder_embedding = nn.Linear(graph_input_dim, embed_dim)
         
         self.transformer = nn.Transformer(
             d_model=embed_dim,
@@ -19,7 +19,7 @@ class GraphToTextTransformer(nn.Module):
             dropout=dropout
         )
         
-        self.output_layer = nn.Linear(embed_dim, text_vocab_size)
+        self.output_layer = nn.Linear(embed_dim, graph_input_dim)
 
     def forward(self, graph_data, text_input, src_mask=None, tgt_mask=None):
         """
@@ -41,14 +41,14 @@ class GraphToTextTransformer(nn.Module):
         graph_encoded = graph_encoded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
         
         # Embed text input
-        text_embedded = self.decoder_embedding(text_input)  # (batch_size, tgt_seq_len, embed_dim)
+        text_embedded = self.decoder_embedding(text_input) # (batch_size, tgt_seq_len, embed_dim)
         
         text_embedded = text_embedded.permute(1, 0, 2)  # (tgt_seq_len, batch_size, embed_dim)
         
         # Pass through transformer
         transformer_output = self.transformer(
-            src=graph_encoded,
-            tgt=text_embedded,
+            src=text_embedded,
+            tgt=graph_encoded,
             src_mask=src_mask,
             tgt_mask=tgt_mask
         )  # (tgt_seq_len, batch_size, embed_dim)
