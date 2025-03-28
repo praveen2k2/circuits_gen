@@ -31,21 +31,21 @@ class GraphToTextTransformer(nn.Module):
          Returns:
             Tensor of shape (batch_size, tgt_seq_len, text_vocab_size)
         """
-        #print("Input graph_data shape:", graph_data.shape)
+        print("Input graph_data shape:", graph_data.shape)
         
         # Encode graph data
         graph_encoded = self.encoder_embedding(graph_data)  # (batch_size, seq_len, embed_dim)
-        #print("graph_encoded shape:", graph_encoded.shape)
+        print("graph_encoded shape:", graph_encoded.shape)
         
         graph_encoded = graph_encoded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
-        #print("graph_encoded permuted shape:", graph_encoded.shape)
+        print("graph_encoded permuted shape:", graph_encoded.shape)
         
         # Embed text input
         text_embedded = self.decoder_embedding(text_input)  # (batch_size, tgt_seq_len, embed_dim)
-        #print("text_embedded shape:", text_embedded.shape)
+        print("text_embedded shape:", text_embedded.shape)
         
         text_embedded = text_embedded.permute(1, 0, 2)  # (tgt_seq_len, batch_size, embed_dim)
-        #print("text_embedded permuted shape:", text_embedded.shape)
+        print("text_embedded permuted shape:", text_embedded.shape)
         
         # Pass through transformer
         transformer_output = self.transformer(
@@ -54,13 +54,13 @@ class GraphToTextTransformer(nn.Module):
             src_mask=src_mask,
             tgt_mask=tgt_mask
         )  # (tgt_seq_len, batch_size, embed_dim)
-        #print("transformer_output shape:", transformer_output.shape)
+        print("transformer_output shape:", transformer_output.shape)
         
         # Map to text vocabulary
         output = self.output_layer(transformer_output)  # (tgt_seq_len, batch_size, text_vocab_size)
-        #print("output shape:", output.shape)
+        print("output shape:", output.shape)
         
         final_output = output.permute(1, 0, 2)  # (batch_size, tgt_seq_len, text_vocab_size)
-        #print("final_output shape:", final_output.shape)
+        print("final_output shape:", final_output.shape)
         
         return final_output
