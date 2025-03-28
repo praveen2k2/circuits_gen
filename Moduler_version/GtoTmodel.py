@@ -6,15 +6,11 @@ class GraphToTextTransformer(nn.Module):
     def __init__(self, graph_input_dim, text_vocab_size, embed_dim, num_heads, num_layers, dropout=0.1):
         super(GraphToTextTransformer, self).__init__()
         self.embed_dim = embed_dim
-
-        # Encoder: Linear layer to embed graph columns
+        
         self.encoder_embedding = nn.Linear(graph_input_dim, embed_dim)
-    
-        # Decoder: Embedding layer for text input
+        
         self.decoder_embedding = nn.Embedding(text_vocab_size, embed_dim)
-
-
-        # Transformer model
+        
         self.transformer = nn.Transformer(
             d_model=embed_dim,
             nhead=num_heads,
@@ -22,8 +18,7 @@ class GraphToTextTransformer(nn.Module):
             num_decoder_layers=num_layers,
             dropout=dropout
         )
-
-        # Output layer to map decoder output to text vocabulary
+        
         self.output_layer = nn.Linear(embed_dim, text_vocab_size)
 
     def forward(self, graph_data, text_input, src_mask=None, tgt_mask=None):
@@ -33,18 +28,25 @@ class GraphToTextTransformer(nn.Module):
             text_input: Tensor of shape (batch_size, tgt_seq_len)
             src_mask: Optional mask for the encoder input
             tgt_mask: Optional mask for the decoder input
-
-        Returns:
+         Returns:
             Tensor of shape (batch_size, tgt_seq_len, text_vocab_size)
         """
+        #print("Input graph_data shape:", graph_data.shape)
+        
         # Encode graph data
         graph_encoded = self.encoder_embedding(graph_data)  # (batch_size, seq_len, embed_dim)
+        #print("graph_encoded shape:", graph_encoded.shape)
+        
         graph_encoded = graph_encoded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
-
+        #print("graph_encoded permuted shape:", graph_encoded.shape)
+        
         # Embed text input
         text_embedded = self.decoder_embedding(text_input)  # (batch_size, tgt_seq_len, embed_dim)
+        #print("text_embedded shape:", text_embedded.shape)
+        
         text_embedded = text_embedded.permute(1, 0, 2)  # (tgt_seq_len, batch_size, embed_dim)
-
+        #print("text_embedded permuted shape:", text_embedded.shape)
+        
         # Pass through transformer
         transformer_output = self.transformer(
             src=graph_encoded,
@@ -52,7 +54,13 @@ class GraphToTextTransformer(nn.Module):
             src_mask=src_mask,
             tgt_mask=tgt_mask
         )  # (tgt_seq_len, batch_size, embed_dim)
-
+        #print("transformer_output shape:", transformer_output.shape)
+        
         # Map to text vocabulary
         output = self.output_layer(transformer_output)  # (tgt_seq_len, batch_size, text_vocab_size)
-        return output.permute(1, 0, 2)  # (batch_size, tgt_seq_len, text_vocab_size)
+        #print("output shape:", output.shape)
+        
+        final_output = output.permute(1, 0, 2)  # (batch_size, tgt_seq_len, text_vocab_size)
+        #print("final_output shape:", final_output.shape)
+        
+        return final_output
