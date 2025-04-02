@@ -3,20 +3,22 @@ import pandas as pd
 import numpy as np
 
 class CircuitS:
-
-    component_indices= []
+    vocab = None
+    vocab_to_index = None
+    index_to_vocab = None
 
     def __init__(self):
         self.graphs = []
         self.component_lists = []
-        self.load_dataset()
+        self.load_dataset_files()
         self.create_vocabulary()
         self.convert_components_to_indices()
+
     
 
 
 
-    def load_dataset(self):
+    def load_dataset_files(self):
 
         start = 1
         end = 3501
@@ -46,9 +48,9 @@ class CircuitS:
     def create_vocabulary(self):
         # Create a vocabulary of unique components from the component lists
         flattened_components = [item for sublist in self.component_lists for item in sublist]
-        vocab = set(flattened_components)
+        self.vocab = set(flattened_components)
 
-        self.vocab_to_index = {component: idx for idx, component in enumerate(vocab)}
+        self.vocab_to_index = {component: idx for idx, component in enumerate(self.vocab)}
         self.index_to_vocab = {idx: component for component, idx in self.vocab_to_index.items()}
 
     def convert_components_to_indices(self):
@@ -62,4 +64,10 @@ class CircuitS:
             for component_list in self.component_lists
         ]
         return self.component_indices
+    
+    def get_component(self, index):
+        # Check if the index is valid
+        if index < 0 or index >= len(self.index_to_vocab):
+            raise IndexError("Index out of range")
+        return self.index_to_vocab[index]
     
