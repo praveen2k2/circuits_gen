@@ -31,7 +31,10 @@ class GraphToTextTransformer(nn.Module):
          Returns:
             Tensor of shape (batch_size, tgt_seq_len, text_vocab_size)
         """
-        
+        # Create a causal mask for the target sequence
+        if tgt_mask is None:
+            tgt_seq_len = text_input.size(1)
+            tgt_mask = torch.triu(torch.ones(tgt_seq_len, tgt_seq_len), diagonal=1).bool().to(graph_data.device)
         # Encode graph data
         graph_encoded = self.encoder_embedding(graph_data)  # (batch_size, seq_len, embed_dim)
         
