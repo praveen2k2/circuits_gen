@@ -2,10 +2,12 @@ import os
 import pandas as pd
 import numpy as np
 
-class CircuitS:
+class Circuits:
     vocab = None
     vocab_to_index = None
     index_to_vocab = None
+    graphs = []
+    component_lists = []
 
     def __init__(self):
         self.graphs = []
