@@ -1,60 +1,73 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-class GraphToTextTransformer(nn.Module):
-    def __init__(self, graph_input_dim, text_vocab_size, dic_dim, num_heads, num_layers, dropout=0.1):
-        super(GraphToTextTransformer, self).__init__()
-        self.embed_dim = dic_dim
+class TransformerModel(nn.Module):
+    def __init__(self, input_dim, embed_dim, num_heads, num_layers, ff_dim, dropout=0.1):
+        super(TransformerModel, self).__init__()
         
-        self.dec_embedding = nn.Linear(graph_input_dim, dic_dim)
+        # Embedding layers for encoder and decoder inputs
+        self.encoder_embedding = nn.Linear(input_dim, embed_dim)
+        self.decoder_embedding = nn.Linear(input_dim, embed_dim)
+        self.component_embedding = nn.Linear(input_dim, embed_dim)
         
-        self.enc_embedding = nn.Embedding(text_vocab_size, dic_dim)
+        # Positional encoding
+        self.positional_encoding = nn.Parameter(torch.zeros(1, 1000, embed_dim))  # Adjust max length as needed
         
+        # Transformer
         self.transformer = nn.Transformer(
-            d_model=dic_dim,
+            d_model=embed_dim,
             nhead=num_heads,
             num_encoder_layers=num_layers,
             num_decoder_layers=num_layers,
+            dim_feedforward=ff_dim,
             dropout=dropout
         )
         
-        self.output_layer = nn.Linear(dic_dim, graph_input_dim)
+        # Output layer
+        self.output_layer = nn.Linear(embed_dim, input_dim)
 
-    def forward(self, graph_data, text_input, src_mask=None, tgt_mask=None):
-        """
-        Args:
-            graph_data: Tensor of shape (batch_size, seq_len, graph_input_dim)
-            text_input: Tensor of shape (batch_size, tgt_seq_len)
-            src_mask: Optional mask for the encoder input
-            tgt_mask: Optional mask for the decoder input
-         Returns:
-            Tensor of shape (batch_size, tgt_seq_len, text_vocab_size)
-        """
-        # Create a causal mask for the target sequence
-        if tgt_mask is None:
-            tgt_seq_len = text_input.size(1)
-            tgt_mask = torch.triu(torch.ones(tgt_seq_len, tgt_seq_len), diagonal=1).bool().to(graph_data.device)
-        # Encode graph data
-        graph_decoded = self.dec_embedding(graph_data)  # (batch_size, seq_len, embed_dim)
+    def forward(self, encoder_input, decoder_input, component_input):
+        # Encoder input embedding
+        encoder_embedded = self.encoder_embedding(encoder_input) + self.positional_encoding[:, :encoder_input.size(1), :]
+        encoder_embedded = encoder_embedded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
         
-        graph_decoded = graph_decoded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
+        # Decoder input embedding
+        decoder_embedded = self.decoder_embedding(decoder_input) + self.positional_encoding[:, :decoder_input.size(1), :]
+        component_embedded = self.component_embedding(component_input)
+        combined_decoder_input = decoder_embedded + component_embedded
+        combined_decoder_input = combined_decoder_input.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
         
-        # Embed text input
-        text_embedded = self.enc_embedding(text_input)  # (batch_size, tgt_seq_len, embed_dim)
-        
-        text_embedded = text_embedded.permute(1, 0, 2)  # (tgt_seq_len, batch_size, embed_dim)
-        
-        # Pass through transformer
+        # Transformer forward pass
         transformer_output = self.transformer(
-            src=graph_decoded,
-            src_mask=src_mask,
-            tgt_mask=tgt_mask
-        )  # (tgt_seq_len, batch_size, embed_dim)
+            src=encoder_embedded,
+            tgt=combined_decoder_input
+        )
         
-        # Map to text vocabulary
-        output = self.output_layer(transformer_output)  # (tgt_seq_len, batch_size, text_vocab_size)
- 
-        final_output = output.permute(1, 0, 2)  # (batch_size, tgt_seq_len, text_vocab_size)
+        # Final output
+        transformer_output = transformer_output.permute(1, 0, 2)  # (batch_size, seq_len, embed_dim)
+        output = self.output_layer(transformer_output)
+        return output
 
-        return final_output
+# Example usage
+if __name__ == "__main__":
+    # Example dimensions
+    input_dim = 10  # Number of features in adjacency matrix rows/columns
+    embed_dim = 32  # Embedding dimension
+    num_heads = 4   # Number of attention heads
+    num_layers = 2  # Number of transformer layers
+    ff_dim = 64     # Feedforward dimension
+    dropout = 0.1   # Dropout rate
+
+    # Instantiate the model
+    model = TransformerModel(input_dim, embed_dim, num_heads, num_layers, ff_dim, dropout)
+
+    # Example inputs
+    batch_size = 8
+    seq_len = 20
+    encoder_input = torch.rand(batch_size, seq_len, input_dim)  # Rows of adjacency matrix
+    decoder_input = torch.rand(batch_size, seq_len, input_dim)  # Columns of adjacency matrix
+    component_input = torch.rand(batch_size, seq_len, input_dim)  # Embedded component list
+
+    # Forward pass
+    output = model(encoder_input, decoder_input, component_input)
+    print(output.shape)  # Output shape: (batch_size, seq_len, input_dim)
