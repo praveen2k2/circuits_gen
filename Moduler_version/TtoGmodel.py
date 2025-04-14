@@ -48,26 +48,3 @@ class TransformerModel(nn.Module):
         output = self.output_layer(transformer_output)
         return output
 
-# Example usage
-if __name__ == "__main__":
-    # Example dimensions
-    input_dim = 10  # Number of features in adjacency matrix rows/columns
-    embed_dim = 32  # Embedding dimension
-    num_heads = 4   # Number of attention heads
-    num_layers = 2  # Number of transformer layers
-    ff_dim = 64     # Feedforward dimension
-    dropout = 0.1   # Dropout rate
-
-    # Instantiate the model
-    model = TransformerModel(input_dim, embed_dim, num_heads, num_layers, ff_dim, dropout)
-
-    # Example inputs
-    batch_size = 8
-    seq_len = 20
-    encoder_input = torch.rand(batch_size, seq_len, input_dim)  # Rows of adjacency matrix
-    decoder_input = torch.rand(batch_size, seq_len, input_dim)  # Columns of adjacency matrix
-    component_input = torch.rand(batch_size, seq_len, input_dim)  # Embedded component list
-
-    # Forward pass
-    output = model(encoder_input, decoder_input, component_input)
-    print(output.shape)  # Output shape: (batch_size, seq_len, input_dim)
