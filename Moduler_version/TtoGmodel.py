@@ -1,73 +1,42 @@
 import torch
 import torch.nn as nn
 
-class TransformerModel(nn.Module):
-    def __init__(self, input_dim, embed_dim, num_heads, num_layers, ff_dim, dropout=0.1):
-        super(TransformerModel, self).__init__()
-        
-        # Embedding layers for encoder and decoder inputs
-        self.encoder_embedding = nn.Linear(input_dim, embed_dim)
-        self.decoder_embedding = nn.Linear(input_dim, embed_dim)
-        self.component_embedding = nn.Linear(input_dim, embed_dim)
-        
-        # Positional encoding
-        self.positional_encoding = nn.Parameter(torch.zeros(1, 1000, embed_dim))  # Adjust max length as needed
-        
-        # Transformer
-        self.transformer = nn.Transformer(
-            d_model=embed_dim,
-            nhead=num_heads,
-            num_encoder_layers=num_layers,
-            num_decoder_layers=num_layers,
-            dim_feedforward=ff_dim,
-            dropout=dropout
+class TextToGraphTransformer(nn.Module):
+    def __init__(self, vocab_size, embedding_dim, hidden_dim, num_heads, num_layers, dropout=0.1):
+        super(TextToGraphTransformer, self).__init__()
+
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.positional_encoding = nn.Parameter(torch.rand(1, 512, embedding_dim))  # Example max sequence length
+
+        # Transformer Encoder layers
+        self.transformer = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(
+                d_model=embedding_dim,
+                nhead=num_heads,
+                dim_feedforward=hidden_dim,
+                dropout=dropout
+            ),
+            num_layers=num_layers
         )
         
-        # Output layer
-        self.output_layer = nn.Linear(embed_dim, input_dim)
+        self.fc = nn.Linear(embedding_dim, 1)  # Output: prediction for each pair (adjacency matrix entry)
 
-    def forward(self, encoder_input, decoder_input, component_input):
-        # Encoder input embedding
-        encoder_embedded = self.encoder_embedding(encoder_input) + self.positional_encoding[:, :encoder_input.size(1), :]
-        encoder_embedded = encoder_embedded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
+    def forward(self, input_seqs, adj_mats, seq_lengths):
+        # Embedding
+        x = self.embedding(input_seqs)
         
-        # Decoder input embedding
-        decoder_embedded = self.decoder_embedding(decoder_input) + self.positional_encoding[:, :decoder_input.size(1), :]
-        component_embedded = self.component_embedding(component_input)
-        combined_decoder_input = decoder_embedded + component_embedded
-        combined_decoder_input = combined_decoder_input.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
-        
-        # Transformer forward pass
-        transformer_output = self.transformer(
-            src=encoder_embedded,
-            tgt=combined_decoder_input
-        )
-        
-        # Final output
-        transformer_output = transformer_output.permute(1, 0, 2)  # (batch_size, seq_len, embed_dim)
-        output = self.output_layer(transformer_output)
-        return output
+        # Add positional encoding
+        x = x + self.positional_encoding[:, :x.size(1), :]
 
-# Example usage
-if __name__ == "__main__":
-    # Example dimensions
-    input_dim = 10  # Number of features in adjacency matrix rows/columns
-    embed_dim = 32  # Embedding dimension
-    num_heads = 4   # Number of attention heads
-    num_layers = 2  # Number of transformer layers
-    ff_dim = 64     # Feedforward dimension
-    dropout = 0.1   # Dropout rate
+        # Apply transformer encoder
+        x = x.permute(1, 0, 2)  # Transformer expects (seq_len, batch, embedding_dim)
+        x = self.transformer(x)
 
-    # Instantiate the model
-    model = TransformerModel(input_dim, embed_dim, num_heads, num_layers, ff_dim, dropout)
+        # Output: Predict the pairwise relationships (adjacency matrix values)
+        adjacency_pred = self.fc(x)  # Shape: (seq_len, batch, 1)
 
-    # Example inputs
-    batch_size = 8
-    seq_len = 20
-    encoder_input = torch.rand(batch_size, seq_len, input_dim)  # Rows of adjacency matrix
-    decoder_input = torch.rand(batch_size, seq_len, input_dim)  # Columns of adjacency matrix
-    component_input = torch.rand(batch_size, seq_len, input_dim)  # Embedded component list
+        # Convert predictions to a matrix of size (batch, seq_len, seq_len)
+        adjacency_matrix = adjacency_pred.squeeze(-1)  # Shape: (batch, seq_len, seq_len)
+        adjacency_matrix = adjacency_matrix @ adjacency_matrix.transpose(-1, -2)  # Symmetric matrix
 
-    # Forward pass
-    output = model(encoder_input, decoder_input, component_input)
-    print(output.shape)  # Output shape: (batch_size, seq_len, input_dim)
+        return adjacency_matrix
