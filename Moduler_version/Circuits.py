@@ -104,3 +104,32 @@ class Circuits:
         # Convert back to the original data types
         return list(graph_dataset) ,list(text_dataset)
     
+
+    def data_lodder_withoutpading(self):
+        """
+        Returns:List: A sequence of All data
+        """
+        graph_dataset =  self.graphs
+        text_dataset = self.component_indices
+
+        # Convert graph_dataset and text_dataset to numpy arrays
+        graph_dataset = np.array(graph_dataset, dtype=object)
+        text_dataset = np.array(text_dataset, dtype=object)
+
+        # Convert numpy arrays to PyTorch tensors
+        graph_dataset = [torch.tensor(graph, dtype=torch.float32) for graph in graph_dataset]
+        text_dataset = [torch.tensor(text, dtype=torch.int) for text in text_dataset]
+
+        # Combine graph_dataset and text_dataset into a single list of tuples
+        combined_dataset = list(zip(graph_dataset, text_dataset))
+
+        # Shuffle the combined dataset
+        np.random.shuffle(combined_dataset)
+    
+
+        # Unzip the shuffled dataset back into graph_dataset and text_dataset
+        graph_dataset, text_dataset = zip(*combined_dataset)
+
+        # Convert back to the original data types
+        return list(graph_dataset) ,list(text_dataset)
+    
