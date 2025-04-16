@@ -4,6 +4,7 @@ import numpy as np
 import torch
 
 class Circuits:
+class Circuits:
     vocab = None
     vocab_to_index = None
     index_to_vocab = None
@@ -17,6 +18,7 @@ class Circuits:
         self.load_dataset_files()
         self.create_vocabulary()
         self.convert_components_to_indices()
+
         
     def load_dataset_files(self):
 
@@ -37,8 +39,10 @@ class Circuits:
             component_list = adjacency_matrix.columns.tolist()
             matrix = adjacency_matrix.to_numpy()
             self.graphs+= [matrix]
+            component_list = [component.split('_')[0] if any(char.isdigit() for char in component) else component for component in component_list]
+            component_list = [''.join(filter(lambda x: not x.isdigit(), component)) for component in component_list]
             self.component_lists += [component_list]
-        print("Loaded dataset files successfully.")
+            # Remove all numbers from component names in the component list        print("Loaded dataset files successfully.")
         return self.component_lists, self.graphs
 
     def create_vocabulary(self):
@@ -47,7 +51,9 @@ class Circuits:
         self.vocab = set(flattened_components)
 
         self.vocab_to_index = {component: idx for idx, component in enumerate(self.vocab)}
+        self.vocab_to_index['end'] = len(self.vocab_to_index)  # Add 'end' token to the vocabulary
         self.index_to_vocab = {idx: component for component, idx in self.vocab_to_index.items()}
+        self.index_to_vocab[len(self.index_to_vocab)] = 'end'  # Add 'end' token to the index-to-vocabulary mapping
         self.index_to_vocab[len(self.index_to_vocab)]="end"
 
     def convert_components_to_indices(self):

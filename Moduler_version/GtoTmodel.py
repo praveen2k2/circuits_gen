@@ -10,8 +10,12 @@ class GraphToTextTransformer(nn.Module):
         self.encoder_embedding = nn.Linear(graph_input_dim, embed_dim)
         
         self.decoder_embedding = nn.Embedding(text_vocab_size, embed_dim)
+        self.positional_encoding = nn.Parameter(torch.zeros(1, 1000, embed_dim))
+
+        
         
         self.transformer = nn.Transformer(
+            activation='gelu',
             d_model=embed_dim,
             nhead=num_heads,
             num_encoder_layers=num_layers,
@@ -39,9 +43,15 @@ class GraphToTextTransformer(nn.Module):
         graph_encoded = self.encoder_embedding(graph_data)  # (batch_size, seq_len, embed_dim)
         
         graph_encoded = graph_encoded.permute(1, 0, 2)  # (seq_len, batch_size, embed_dim)
+        # Apply positional encoding 
         
         # Embed text input
         text_embedded = self.decoder_embedding(text_input)  # (batch_size, tgt_seq_len, embed_dim)
+        text_embedded = text_embedded + self.positional_encoding[:, :text_input.size(1), :]  # (batch_size, tgt_seq_len, embed_dim)
+        # Apply dropout
+        text_embedded = F.dropout(text_embedded, p=0.1, training=self.training)
+        # Permute to match transformer input shape
+        
         
         text_embedded = text_embedded.permute(1, 0, 2)  # (tgt_seq_len, batch_size, embed_dim)
         
