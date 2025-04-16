@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import torch
 
-class Circuits:
+
 class Circuits:
     vocab = None
     vocab_to_index = None
@@ -39,8 +39,8 @@ class Circuits:
             component_list = adjacency_matrix.columns.tolist()
             matrix = adjacency_matrix.to_numpy()
             self.graphs+= [matrix]
-            component_list = [component.split('_')[0] if any(char.isdigit() for char in component) else component for component in component_list]
-            component_list = [''.join(filter(lambda x: not x.isdigit(), component)) for component in component_list]
+            # component_list = [component.split('_')[0] if any(char.isdigit() for char in component) else component for component in component_list]
+            # component_list = [''.join(filter(lambda x: not x.isdigit(), component)) for component in component_list]
             self.component_lists += [component_list]
             # Remove all numbers from component names in the component list        print("Loaded dataset files successfully.")
         return self.component_lists, self.graphs
