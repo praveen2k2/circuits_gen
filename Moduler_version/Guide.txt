@@ -1,0 +1,21 @@
+*   train_0.3 and TtoGmodel_03 is the first working model with some accuracy
+
+*   train_1.0 and TtoGmodel_10 is the complex model with improved accuracy
+
+*   train_1.1 and TtoGmodel_11 has label smoothing - Fail (too much 1's)
+✅ Changes made:
+Label Smoothing:
+
+Implemented using smoothed_labels = true_flat * (1 - ε) + ε * 0.5.
+
+Replaces true_flat in the loss calculation with smoothed_labels.
+
+Using pos_weight in BCEWithLogitsLoss:
+
+Added pos_weight to handle class imbalance (many 0s, few 1s).
+
+pos_weight = torch.tensor([weight_value]) — weight_value depends on imbalance, set to 10.0 as a reasonable starting point.
+
+*   train_1.2 and TtoGmodel_12  added masking randomly and added adjacency matrix input
+
+*   
