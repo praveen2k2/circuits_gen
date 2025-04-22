@@ -67,6 +67,14 @@ class Circuits:
             for component_list in self.component_lists
         ]
         return self.component_indices
+    def get_indices(self,component_list):
+        # Ensure vocabulary is created
+        if not hasattr(self, 'vocab_to_index') or not self.vocab_to_index:
+            self.create_vocabulary()
+
+        # Convert each component list to a list of indices
+        component_indices = [self.vocab_to_index[component] for component in component_list]
+        return component_indices
     
     def get_component(self, index):
         # Check if the index is valid
