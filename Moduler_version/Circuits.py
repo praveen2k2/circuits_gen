@@ -26,7 +26,7 @@ class Circuits:
         for i in range (start, end+1):
             number = str(i)
             # Define file names
-            graph_file = 'D:\MY FILES\Projects\circuits_gen/Dataset/' + number + '/Graph' + number + '.csv'
+            graph_file = '../Dataset/' + number + '/Graph' + number + '.csv'
             if not os.path.isfile(graph_file):
                 # If it doesn't exist, skip the rest of this loop iteration
                 continue
