@@ -1,4 +1,6 @@
-Circuits Generation Workspace
+------------------------------------------------------------
+Circuits Gen
+------------------------------------------------------------
 
 This repository contains code and models for circuit graph and text generation using deep learning, including transformer-based architectures for both graph-to-text and text-to-graph tasks.
 
