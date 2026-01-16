@@ -1,0 +1,378 @@
+Example 1:
+Input Sequence: [376 486 565  10 379 622 107 338 386 542 408 190  32 859  13 321 864 277
+ 244  64 138 449 280 741 462 258 541 553 564 717 525 328 681 395 390 602
+ 322 180  91 853 583 416  76 731 609 337 621 499   9 437 798 443 735 267
+ 496 452  49 170 143 357 259 696 842 233  78 561 124 822 433  26 157 863
+ 409 274 400 245 418 889 688 875 754 783 514 847 112 147 546 848 724 575
+ 646 301 504 604 308 353 684 332 831  24 434 135  70 767 108 888 813 488
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+Adjacency Matrix: [[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ ...
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]]
+Sequence Lengths: [108 149 117 145  96  26 206 121  98  70  98  85 214 109 114 153]
+Input Sequence shape: [214]
+Adjacency Matrix shape: [214, 214]
+Sequence Lengths shape: [16]
+--------------------------------------------------
+Input Sequence: 
+[376 486 565  10 379 622 107 338 386 542 408 190  32 859  13 321 864 277
+ 244  64 138 449 280 741 462 258 541 553 564 717 525 328 681 395 390 602
+ 322 180  91 853 583 416  76 731 609 337 621 499   9 437 798 443 735 267
+ 496 452  49 170 143 357 259 696 842 233  78 561 124 822 433  26 157 863
+ 409 274 400 245 418 889 688 875 754 783 514 847 112 147 546 848 724 575
+ 646 301 504 604 308 353 684 332 831  24 434 135  70 767 108 888 813 488
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+Input Sequence shape: [214]
+seq_mask: 
+[ True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False]
+seq_mask shape: [214]
+predicted_logits: 
+[ -4.184 -16.97  -16.22  -17.56  -13.96  -11.32  -14.11 ]
+predicted_logits shape: [214, 214]
+mask: 
+[ True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False]
+mask shape: [214]
+mask2d: row 1
+[ True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False]
+mask2d: row 100
+[ True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False]
+mask2d shape: [214, 214]
+mask_flat: 
+[ True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True]
+mask_flat shape: [732736]
+pred_flat: 
+tensor([ -4.1836, -16.9688, -16.2188, -17.5625, -13.9609, -11.3203, -14.1094,
+        -15.3125, -19.9219, -11.6094,  -7.0781, -13.9062, -11.8750, -15.4844,
+        -11.5000, -13.1094, -15.0156, -11.6016, -15.5781, -14.2734, -13.2656,
+        -12.6641, -13.7422,  -4.8672,  -9.0469,  -7.8516,  -0.8711,   9.5391,
+         -7.0430,  -8.4844,  -8.6172,   5.3086,   8.5312,  -4.1836, -13.7188,
+        -11.2188,   6.8164,   8.3594,  -8.3750,  -9.7422,  -8.7734,   7.7969,
+          7.8984, -12.1641,  -9.7344, -10.5156, -13.2578, -13.5000, -13.9531,
+         -8.3906,  -9.2500, -13.5156, -12.0000, -12.7812,  -8.4609,  -8.3281,
+        -11.6797, -12.6250,  -5.2305,  -9.4141,  -9.8516,   9.4375,   9.4922,
+         -4.5938, -10.2109, -11.2969,   8.8125,   9.9219,  -5.8828, -12.3281,
+        -12.3672,   8.8906,   8.4766, -16.7812,  -8.4922,  -8.3750, -12.8750,
+        -13.3281, -17.3750,  -7.9453, -12.2344, -12.7578, -14.7344, -20.0000,
+         -9.7344, -12.4609, -15.2109, -14.0938, -17.0312, -10.6406],
+       device='cuda:0', dtype=torch.float16)
+pred_flat shape: [732736]
+true_flat: 
+tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0.,
+        1., 1., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 1., 1., 0., 0., 0., 1.,
+        1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+       device='cuda:0')
+true_flat shape: [732736]
+Loss: 
+0.3880910277366638
+--------------------------------------------------
+--------------------------------------------------
+Total Test Loss: 0.3881
+Pred_labels: [[1.5015e-02 5.9605e-08 1.1921e-07 ... 3.9935e-06 3.0994e-06 4.9472e-06]
+ [5.9605e-08 1.7891e-03 1.2517e-06 ... 1.2146e-02 3.6221e-03 1.0777e-03]
+ [1.1921e-07 1.2517e-06 3.2425e-05 ... 1.7517e-02 1.3123e-02 1.2627e-02]
+ ...
+ [1.0000e+00 2.3842e-07 4.7684e-07 ... 1.3232e-05 8.8215e-06 1.1146e-05]
+ [8.7261e-04 5.9605e-08 5.9605e-08 ... 3.0994e-06 3.7551e-06 9.0003e-06]
+ [2.0659e-04 2.3842e-07 3.8395e-03 ... 3.6163e-02 3.5828e-02 4.1077e-02]]
+Pred_labels shape: [16, 214, 214]
+Pred_labels: [[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ ...
+ [1. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]]
+Pred_labels shape: [214, 214]
+True_labels: [[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ ...
+ [1. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]]
+True_labels shape: [214, 214]
+Pred_flat: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Pred_flat shape: [732736]
+True_flat: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+True_flat shape: [732736]
+--------------------------------------------------
+Example 1:
+Confusion Matrix:
+[[684527  30465]
+ [  3492  14252]]
+Accuracy: 0.95
+Precision: 0.32
+Recall: 0.80
+F1 Score: 0.46
+--------------------------------------------------
+Example 2:
+Confusion Matrix:
+[[696815  13681]
+ [  3460  11948]]
+Accuracy: 0.98
+Precision: 0.47
+Recall: 0.78
+F1 Score: 0.58
+--------------------------------------------------
+Example 3:
+Confusion Matrix:
+[[688837  31141]
+ [  2726  10032]]
+Accuracy: 0.95
+Precision: 0.24
+Recall: 0.79
+F1 Score: 0.37
+--------------------------------------------------
+Example 4:
+Confusion Matrix:
+[[465749  26353]
+ [  1910   7252]]
+Accuracy: 0.94
+Precision: 0.22
+Recall: 0.79
+F1 Score: 0.34
+--------------------------------------------------
+Example 5:
+Confusion Matrix:
+[[776531  20769]
+ [  2984   9716]]
+Accuracy: 0.97
+Precision: 0.32
+Recall: 0.77
+F1 Score: 0.45
+--------------------------------------------------
+Example 6:
+Confusion Matrix:
+[[429924  18578]
+ [  2984  10914]]
+Accuracy: 0.95
+Precision: 0.37
+Recall: 0.79
+F1 Score: 0.50
+--------------------------------------------------
+Example 7:
+Confusion Matrix:
+[[774042  26428]
+ [  3488  13258]]
+Accuracy: 0.96
+Precision: 0.33
+Recall: 0.79
+F1 Score: 0.47
+--------------------------------------------------
+Example 8:
+Confusion Matrix:
+[[384553  15727]
+ [  2776  11680]]
+Accuracy: 0.96
+Precision: 0.43
+Recall: 0.81
+F1 Score: 0.56
+--------------------------------------------------
+Example 9:
+Confusion Matrix:
+[[650918  17522]
+ [  2554   7982]]
+Accuracy: 0.97
+Precision: 0.31
+Recall: 0.76
+F1 Score: 0.44
+--------------------------------------------------
+Example 10:
+Confusion Matrix:
+[[642689  21239]
+ [  3256  11792]]
+Accuracy: 0.96
+Precision: 0.36
+Recall: 0.78
+F1 Score: 0.49
+--------------------------------------------------
+Example 11:
+Confusion Matrix:
+[[731403  25913]
+ [  3456  13628]]
+Accuracy: 0.96
+Precision: 0.34
+Recall: 0.80
+F1 Score: 0.48
+--------------------------------------------------
+Example 12:
+Confusion Matrix:
+[[510422  20408]
+ [  2222   8644]]
+Accuracy: 0.96
+Precision: 0.30
+Recall: 0.80
+F1 Score: 0.43
+--------------------------------------------------
+Example 13:
+Confusion Matrix:
+[[694152  23360]
+ [  3128  12096]]
+Accuracy: 0.96
+Precision: 0.34
+Recall: 0.79
+F1 Score: 0.48
+--------------------------------------------------
+Example 14:
+Confusion Matrix:
+[[455395  17771]
+ [  2676   8574]]
+Accuracy: 0.96
+Precision: 0.33
+Recall: 0.76
+F1 Score: 0.46
+--------------------------------------------------
+Example 15:
+Confusion Matrix:
+[[568443  13551]
+ [  3320  10670]]
+Accuracy: 0.97
+Precision: 0.44
+Recall: 0.76
+F1 Score: 0.56
+--------------------------------------------------
+Example 16:
+Confusion Matrix:
+[[497477  14167]
+ [  2198  10334]]
+Accuracy: 0.97
+Precision: 0.42
+Recall: 0.82
+F1 Score: 0.56
+--------------------------------------------------
+Example 17:
+Confusion Matrix:
+[[325983  12195]
+ [  2012  10274]]
+Accuracy: 0.96
+Precision: 0.46
+Recall: 0.84
+F1 Score: 0.59
+--------------------------------------------------
+Example 18:
+Confusion Matrix:
+[[303976   7512]
+ [  2358   8778]]
+Accuracy: 0.97
+Precision: 0.54
+Recall: 0.79
+F1 Score: 0.64
+--------------------------------------------------
+Example 19:
+Confusion Matrix:
+[[368689  15875]
+ [  2192   7628]]
+Accuracy: 0.95
+Precision: 0.32
+Recall: 0.78
+F1 Score: 0.46
+--------------------------------------------------
+Example 20:
+Confusion Matrix:
+[[312122  12284]
+ [  1912   5458]]
+Accuracy: 0.96
+Precision: 0.31
+Recall: 0.74
+F1 Score: 0.43
+--------------------------------------------------
+Example 21:
+Confusion Matrix:
+[[685468  19785]
+ [  3338  10824]]
+Accuracy: 0.97
+Precision: 0.35
+Recall: 0.76
+F1 Score: 0.48
+--------------------------------------------------

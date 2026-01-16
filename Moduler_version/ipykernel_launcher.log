@@ -1,0 +1,10 @@
+WARNING: KICAD_SYMBOL_DIR environment variable is missing, so the default KiCad symbol libraries won't be searched. @ [d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap_external>:1026=>d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap>:488]
+WARNING: KICAD6_SYMBOL_DIR environment variable is missing, so the default KiCad symbol libraries won't be searched. @ [d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap_external>:1026=>d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap>:488]
+WARNING: KICAD7_SYMBOL_DIR environment variable is missing, so the default KiCad symbol libraries won't be searched. @ [d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap_external>:1026=>d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap>:488]
+WARNING: KICAD8_SYMBOL_DIR environment variable is missing, so the default KiCad symbol libraries won't be searched. @ [d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap_external>:1026=>d:\MY FILES\Projects\circuits_gen\Moduler_version\<frozen importlib._bootstrap>:488]
+ERROR: Can't open file: power.
+ @ [c:\Python313\Lib\site-packages\IPython\core\interactiveshell.py:3549=>C:\Users\pasin\AppData\Local\Temp\ipykernel_16324\2257988866.py:30]
+WARNING: Could not load KiCad schematic library "power", falling back to backup library. @ [c:\Python313\Lib\site-packages\IPython\core\interactiveshell.py:3549=>C:\Users\pasin\AppData\Local\Temp\ipykernel_16324\2257988866.py:30]
+ERROR: Can't open file: power.
+ @ [c:\Python313\Lib\site-packages\IPython\core\interactiveshell.py:3549=>C:\Users\pasin\AppData\Local\Temp\ipykernel_16324\2751584002.py:11]
+WARNING: Could not load KiCad schematic library "power", falling back to backup library. @ [c:\Python313\Lib\site-packages\IPython\core\interactiveshell.py:3549=>C:\Users\pasin\AppData\Local\Temp\ipykernel_16324\2751584002.py:11]
